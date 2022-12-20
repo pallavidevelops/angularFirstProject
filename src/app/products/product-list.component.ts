@@ -25,10 +25,11 @@ export class ProductListComponent implements OnInit{
         this.filteredProducts = this.products;
     }
 
-    filterProducts(): void {
-      this.filterBy = this.filterBy.toLowerCase();
+    filterProducts(filterBy :string): void {
+      filterBy = filterBy.toLowerCase();
       this.filteredProducts = this.products?.filter((product : IProduct) =>
-      product.productName.toLowerCase().includes(this.filterBy));
+      product.productName.toLowerCase().includes(filterBy));
+      console.log(this.filteredProducts);
     }
       toggleImage():void{
         this.showImage = !this.showImage;
