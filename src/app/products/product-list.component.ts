@@ -59,4 +59,8 @@ export class ProductListComponent{
       toggleImage():void{
         this.showImage = !this.showImage;
       }
+
+      onRatingChange(message: string):void{
+        this.pageTitle = message;
+      }
 }
