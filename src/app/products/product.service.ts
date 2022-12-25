@@ -1,11 +1,15 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { catchError, Observable, tap } from "rxjs";
 import { IProduct } from "./product";
 
 @Injectable({
     providedIn : 'root'
 })
-export class ProductService{
-getProducts():IProduct[]{
+export class ProductService {
+  productUrl : string = "api/products/products.json";
+  constructor (private http : HttpClient){}
+getProducts_old():IProduct[]{
     return [
         {
           "productId": 1,
@@ -48,4 +52,12 @@ getProducts():IProduct[]{
           "imageUrl": "assets/images/saw.png"
         }];
 }
+getProducts(): Observable<IProduct[]>{
+return this.http.get<IProduct[]>(this.productUrl)
+      .pipe(
+        tap(data => console.log('products',JSON.stringify(data)))
+      // catchError()
+      )
+}
+       
 }
