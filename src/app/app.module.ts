@@ -6,6 +6,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { WelcomeComponent } from './home/welcome.component';
 import { FormsModule } from '@angular/forms';
 import { ProductModule } from './products/product.module';
+import { PageNotFoundComponent } from './page-not-found.component';
+import { MessageModule } from './messages/message.module';
+import { UserModule } from './user/user.module';
 
 const routes : Routes =  [
   {path :'welcome', component: WelcomeComponent},
@@ -15,14 +18,17 @@ const routes : Routes =  [
 @NgModule({
   declarations: [
     AppComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
     RouterModule.forRoot(routes),
-    ProductModule
+    ProductModule,
+    UserModule,
+    MessageModule
   ],
   bootstrap: [AppComponent]
 })

@@ -1,6 +1,6 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { catchError, Observable, tap } from "rxjs";
+import { catchError, map, Observable, of, tap, throwError } from "rxjs";
 import { IProduct } from "./product";
 
 @Injectable({
@@ -9,49 +9,7 @@ import { IProduct } from "./product";
 export class ProductService {
   productUrl : string = "api/products/products.json";
   constructor (private http : HttpClient){}
-getProducts_old():IProduct[]{
-    return [
-        {
-          "productId": 1,
-          "productName": "Leaf Rake",
-          "productCode": "GDN-0011",
-          "releaseDate": "March 19, 2021",
-          "description": "Leaf rake with 48-inch wooden handle.",
-          "price": 19.95,
-          "starRating": 3.2,
-          "imageUrl": "assets/images/leaf_rake.png"
-        },
-        {
-          "productId": 2,
-          "productName": "Garden Cart",
-          "productCode": "GDN-0023",
-          "releaseDate": "March 18, 2021",
-          "description": "Leaf rake with 48-inch wooden handle. Leaf rake with 48-inch wooden handle.",
-          "price": 32.99,
-          "starRating": 4.2,
-          "imageUrl": "assets/images/garden_cart.png"
-        },
-        {
-          "productId": 5,
-          "productName": "Hammer",
-          "productCode": "TBX-0048",
-          "releaseDate": "May 21, 2021",
-          "description": "Leaf rake with 48-inch wooden handle. Leaf rake with 48-inch wooden handle.Leaf rake with 48-inch wooden handle.",
-          "price": 8.9,
-          "starRating": 4.8,
-          "imageUrl": "assets/images/hammer.png"
-        },
-        {
-          "productId": 8,
-          "productName": "Saw",
-          "productCode": "TBX-0022",
-          "releaseDate": "May 15, 2021",
-          "description": "",
-          "price": 11.55,
-          "starRating": 3.7,
-          "imageUrl": "assets/images/saw.png"
-        }];
-}
+
 getProducts(): Observable<IProduct[]>{
 return this.http.get<IProduct[]>(this.productUrl)
       .pipe(
@@ -59,5 +17,81 @@ return this.http.get<IProduct[]>(this.productUrl)
       // catchError()
       )
 }
-       
+getProduct(id: number): Observable<IProduct> {
+  if (id === 0) {
+    return of(this.initializeProduct());
+  }
+  const url = `${this.productUrl}/${id}`;
+  return this.http.get<IProduct>(url)
+    .pipe(
+      tap(data => console.log('getProduct: ' + JSON.stringify(data))),
+      catchError(this.handleError)
+    );
+}
+
+createProduct(product: IProduct): Observable<IProduct> {
+  const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  // Required for the in memory web API to assign a unique id
+  product.id = null;
+  return this.http.post<IProduct>(this.productUrl, product, { headers })
+    .pipe(
+      tap(data => console.log('createProduct: ' + JSON.stringify(data))),
+      catchError(this.handleError)
+    );
+}
+
+deleteProduct(id: number): Observable<{}> {
+  const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  const url = `${this.productUrl}/${id}`;
+  return this.http.delete<IProduct>(url, { headers })
+    .pipe(
+      tap(data => console.log('deleteProduct: ' + id)),
+      catchError(this.handleError)
+    );
+}
+
+updateProduct(product: IProduct): Observable<IProduct> {
+  const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  const url = `${this.productUrl}/${product.id}`;
+  return this.http.put<IProduct>(url, product, { headers })
+    .pipe(
+      tap(() => console.log('updateProduct: ' + product.id)),
+      // Return the product on an update
+      map(() => product),
+      catchError(this.handleError)
+    );
+}
+
+private handleError(err: HttpErrorResponse): Observable<never> {
+  // in a real world app, we may send the server to some remote logging infrastructure
+  // instead of just logging it to the console
+  let errorMessage: string;
+  if (err.error instanceof ErrorEvent) {
+    // A client-side or network error occurred. Handle it accordingly.
+    errorMessage = `An error occurred: ${err.error.message}`;
+  } else {
+    // The backend returned an unsuccessful response code.
+    // The response body may contain clues as to what went wrong,
+    errorMessage = `Backend returned code ${err.status}: ${err.message}`;
+  }
+  console.error(err);
+  return throwError(() => errorMessage);
+}
+
+private initializeProduct(): IProduct {
+  // Return an initialized object
+  return {
+    id: 0,
+    productName: '',
+    productCode: '',
+    category: '',
+    tags: [],
+    releaseDate: '',
+    price: 0,
+    description: '',
+    starRating: 0,
+    imageUrl: ''
+  };
+}
+      
 }
