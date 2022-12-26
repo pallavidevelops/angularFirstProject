@@ -52,13 +52,15 @@
                     <td><pm-star [rating]="product.starRating"
                         (notifyContainerComponent)="onRatingChange($event)"></pm-star></td>
                     <td>
-                        <textarea
+                        <!-- <textarea
                          pmTextareaFitToValue
                             [minRows]="1"
                             [maxRows]="0"
                             placeholder="Type your message here..."
                             class="text-input"
-                        >{{product.description}}</textarea>
+                        > -->
+                        {{product.description}}
+                    <!-- </textarea> -->
                     </td>
                     </tr>
                 </tbody>
