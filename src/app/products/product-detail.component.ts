@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { IProduct } from '../product';
-import { ProductService } from '../product.service';
 
-
+import { Product } from './product';
+import { ProductService } from './product.service';
 
 @Component({
   templateUrl: './product-detail.component.html',
@@ -10,7 +9,7 @@ import { ProductService } from '../product.service';
 })
 export class ProductDetailComponent {
   pageTitle = 'Product Detail';
-  product: IProduct | null = null;
+  product: Product | null = null;
   errorMessage = '';
 
   constructor(private productService: ProductService) { }
@@ -22,7 +21,7 @@ export class ProductDetailComponent {
     });
   }
 
-  onProductRetrieved(product: IProduct): void {
+  onProductRetrieved(product: Product): void {
     this.product = product;
 
     if (this.product) {
