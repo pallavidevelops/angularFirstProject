@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-
+import {Route, RouterModule} from '@angular/router'
 // Imports for loading & configuring the in-memory web api
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { ProductData } from './products/product-data';
@@ -14,12 +14,17 @@ import { PageNotFoundComponent } from './page-not-found.component';
 import { ProductModule } from './products/product.module';
 import { UserModule } from './user/user.module';
 import { MessageModule } from './messages/message.module';
-
+const routes: Route[] = [
+  {path:'home', component: WelcomeComponent},
+  {path:'', redirectTo: 'home', pathMatch:'full'},
+  {path: '**', component: PageNotFoundComponent}
+];
 @NgModule({
   imports: [
     BrowserModule,
     HttpClientModule,
     InMemoryWebApiModule.forRoot(ProductData, { delay: 1000 }),
+    RouterModule.forRoot(routes),
     ProductModule,
     UserModule,
     MessageModule
