@@ -14,11 +14,19 @@ export class ProductListComponent implements OnInit, OnDestroy{
     imageWidth : number = 50;
     imageMargin :number = 2;
     showImage : boolean = false;
-    filterBy :string = '';
+    // filterBy :string = '';
     //products : any
     productSubscription!: Subscription;
     products : IProduct[] | undefined ;
     filteredProducts : IProduct[] | undefined ;
+    private _filterBy = '';
+    get filterBy(): string {
+      return this._filterBy;
+    }
+    set filterBy(value: string) {
+      this._filterBy = value;
+      this.filteredProducts = this.filterProducts(value);
+    }
     constructor(private _productService: ProductService){
     }
     ngOnInit(): void {
@@ -34,11 +42,15 @@ export class ProductListComponent implements OnInit, OnDestroy{
        
     }
 
-    filterProducts(filterBy :string): void {
+    filterProducts(filterBy :string): IProduct[] | undefined  {
       filterBy = filterBy.toLowerCase();
-      this.filteredProducts = this.products?.filter((product : IProduct) =>
+
+      let list = this.products?.filter((product : IProduct) =>
       product.productName.toLowerCase().includes(filterBy));
+      
       console.log(this.filteredProducts);
+      return list;
+
     }
       toggleImage():void{
         this.showImage = !this.showImage;
